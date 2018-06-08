@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu May 24 18:30:30 2018
-
-@author: pt
+#==========================================# 
+# Author: Pranav
+# If you find this code useful, 
+# please include this section and give 
+# credit to original author.  
+#==========================================
 """
 
 import os, sys

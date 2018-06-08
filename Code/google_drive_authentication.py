@@ -1,3 +1,10 @@
+#==========================================# 
+# Author: Pranav
+# If you find this code useful, 
+# please include this section and give 
+# credit to original author.  
+#==========================================
+
 print(">>>>>>>>>>>> Tip: How to get Kaggle authentication token <<<<<<<<<<<")
 
 print("1. To use the Kaggle API, sign up for a Kaggle account at https://www.kaggle.com.")

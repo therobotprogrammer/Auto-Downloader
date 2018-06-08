@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Thu May 24 23:06:32 2018
-
-@author: pt
-"""
+#==========================================# 
+# Author: Pranav
+# If you find this code useful, 
+# please include this section and give 
+# credit to original author.  
+#==========================================
 
 import wget,sys,os
 
