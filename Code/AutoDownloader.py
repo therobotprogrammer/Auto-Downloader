@@ -300,7 +300,7 @@ class AutoDownloader(object):
         
             This function sends message to my mobile using Pushover.
         '''          
-        '''
+        
         url = "https://api.pushover.net/1/messages.json"
         data = {
             'user'  : self.pushover_user_key,
@@ -311,8 +311,7 @@ class AutoDownloader(object):
         #data['message'] = data['message'] + "\n" + str(datetime.now())
     
         r = requests.post(url = url, data = data)
-        '''
-        print(msg_string)
+        
 
 
 
