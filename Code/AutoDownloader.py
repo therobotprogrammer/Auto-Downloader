@@ -15,8 +15,10 @@ import wget
 import time
 import shutil
 import requests
-from datetime import datetime
-
+import datetime
+import pandas as pd
+import pytz
+from pytz import timezone
 
 self_all_gids = []
 last_download_speed = 0 
@@ -26,12 +28,16 @@ last_download_percentages = ''
 pushover_user_key = ''
 pushover_token = ''
 
+last_message_time = -1
+options = {}
 
 
 class AutoDownloader(object):  
   
+    def __init__(self):
+        self.last_message_time = -1
         
-    def initiate(self, project_dir, data_to_download, common_utils_dir = 'default' ):     
+    def initiate(self, project_dir, data_to_download, common_utils_dir = 'default' ):           
         if not os.path.isdir(project_dir):
             os.mkdir(project_dir)
             
@@ -45,7 +51,7 @@ class AutoDownloader(object):
         from pyaria2 import PyAria2 ###############################################################???
            
         downloader = PyAria2()
-        time.sleep(2)    
+        time.sleep(1)    
 
         self.__add_files_to_aria(downloader, project_dir, data_to_download, common_utils_dir)                
         self.__printDownloadStatus(downloader)        
@@ -290,8 +296,8 @@ class AutoDownloader(object):
             http://forums.fast.ai/t/training-metrics-as-notifications-on-mobile-using-callbacks/17330
         
             This function sends message to my mobile using Pushover.
-        '''     
-            
+        '''          
+        
         url = "https://api.pushover.net/1/messages.json"
         data = {
             'user'  : self.pushover_user_key,
@@ -302,7 +308,71 @@ class AutoDownloader(object):
         #data['message'] = data['message'] + "\n" + str(datetime.now())
     
         r = requests.post(url = url, data = data)
+        
 
 
+
+    def send_notification_every_x_minutes(self,msg_string, time_interval_minutes = 60):
+        if time_interval_minutes == 0:
+           self.send_notification(msg_string)
+           return
+        
+        current_time = datetime.datetime.now() 
+        
+        if self.last_message_time == -1:
+            self.send_notification(msg_string)
+            self.last_message_time = current_time  
+
+        else:
+            time_difference = current_time - self.last_message_time
+            time_different_minutes = time_difference.total_seconds() / 60
+
+            if time_different_minutes >= time_interval_minutes:
+               self.send_notification(msg_string)
+               self.last_message_time = current_time                         
+           
+        
+        
+    def send_notification_clock_multiples(self,msg_string, time_interval = 1, minute_interval = True, local_timezone = 'Asia/Kolkata'):
+
+        #US timezone: 'US/Eastern'                   
+        local_timezone = timezone(local_timezone)    
+        system_time = datetime.datetime.now()                           
+        local_time = local_timezone.localize(system_time)             
+        
+        if self.last_message_time == -1:
+            self.send_notification(msg_string)
+            self.last_message_time = local_time            
+        
+        else:
+            time_difference = local_time - self.last_message_time 
+            if minute_interval = True:
+                time_difference = time_difference.total_seconds() / 60
+            else:
+                time_difference = time_difference.total_seconds() / (60*60) #hourly
+
+            if (time_difference >= time_interval):
+                if local_time.minute == 0:                   
+                   self.send_notification(msg_string)
+                   self.last_message_time = local_time    
+                elif local_time.minute % time_interval == 0:
+                   self.send_notification(msg_string)
+                   self.last_message_time = local_time                     
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
 
