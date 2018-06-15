@@ -29,6 +29,7 @@ pushover_user_key = ''
 pushover_token = ''
 
 last_message_time = -1
+flag_first_hour_message_sent = False
 options = {}
 
 
@@ -36,6 +37,8 @@ class AutoDownloader(object):
   
     def __init__(self):
         self.last_message_time = -1
+        self.flag_first_hour_message_sent = False
+
         
     def initiate(self, project_dir, data_to_download, common_utils_dir = 'default' ):           
         if not os.path.isdir(project_dir):
@@ -297,7 +300,7 @@ class AutoDownloader(object):
         
             This function sends message to my mobile using Pushover.
         '''          
-        
+        '''
         url = "https://api.pushover.net/1/messages.json"
         data = {
             'user'  : self.pushover_user_key,
@@ -308,7 +311,8 @@ class AutoDownloader(object):
         #data['message'] = data['message'] + "\n" + str(datetime.now())
     
         r = requests.post(url = url, data = data)
-        
+        '''
+        print(msg_string)
 
 
 
@@ -333,12 +337,17 @@ class AutoDownloader(object):
            
         
         
-    def send_notification_clock_multiples(self,msg_string, time_interval = 1, minute_interval = True, local_timezone = 'Asia/Kolkata'):
-
-        #US timezone: 'US/Eastern'                   
+    def send_notification_clock_multiples(self,msg_string, time_interval = 1, minute_interval = True, local_timezone = 'Asia/Kolkata'): 
+        #US timezone: 'US/Eastern'               
+        
+        if time_interval == 0:
+            time_interval = 1 # avoids division by 0 
+        
         local_timezone = timezone(local_timezone)    
         system_time = datetime.datetime.now()                           
-        local_time = local_timezone.localize(system_time)             
+        local_time = local_timezone.localize(system_time)  
+
+       
         
         if self.last_message_time == -1:
             self.send_notification(msg_string)
@@ -346,18 +355,31 @@ class AutoDownloader(object):
         
         else:
             time_difference = local_time - self.last_message_time 
-            if minute_interval = True:
+            if minute_interval == True:
                 time_difference = time_difference.total_seconds() / 60
             else:
                 time_difference = time_difference.total_seconds() / (60*60) #hourly
 
-            if (time_difference >= time_interval):
-                if local_time.minute == 0:                   
-                   self.send_notification(msg_string)
-                   self.last_message_time = local_time    
-                elif local_time.minute % time_interval == 0:
-                   self.send_notification(msg_string)
-                   self.last_message_time = local_time                     
+            if minute_interval == True:
+                if time_difference >= time_interval:    
+                       if local_time.minute == 0:                   
+                           self.send_notification(msg_string)
+                           self.last_message_time = local_time    
+                       elif local_time.minute % time_interval == 0:
+                           self.send_notification(msg_string)
+                           self.last_message_time = local_time  
+                       
+            if minute_interval == False:  
+               if self.flag_first_hour_message_sent == False:
+                   if local_time.hour % 1 == 0 and local_time.minute == 0: 
+                     self.send_notification(msg_string)
+                     self.last_message_time = local_time
+                     self.flag_first_hour_message_sent = True
+
+               elif time_difference >= time_interval:                     
+                   if local_time.hour % time_interval == 0:
+                       self.send_notification(msg_string)
+                       self.last_message_time = local_time 
         
         
         
