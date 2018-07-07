@@ -66,7 +66,7 @@ class AutoDownloader(object):
         print('\n>>>Unzipping') 
         self.__unzip_all(project_dir, data_to_download)        
         
-        self.showDirectory(project_dir)
+        #self.showDirectory(project_dir)
         
         self.all_gids = []
         del downloader
