@@ -40,8 +40,11 @@ class AutoDownloader(object):
         self.flag_first_hour_message_sent = False
 
         
-    def initiate(self, project_dir, data_to_download, common_utils_dir = 'default' ):           
+    def initiate(self, project_dir, data_to_download, common_utils_dir = 'default', recreate_dir = True ):           
         if not os.path.isdir(project_dir):
+            os.mkdir(project_dir)
+        elif recreate_dir = True:
+            shutil.rmtree(project_dir)
             os.mkdir(project_dir)
             
         os.chdir(project_dir)
@@ -65,7 +68,7 @@ class AutoDownloader(object):
         self.showDirectory(project_dir)
         
         self.self_all_gids = []
-        
+        del downloader
 
 
     def __download_common_utils(self, common_utils_dir):

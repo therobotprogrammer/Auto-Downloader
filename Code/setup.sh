@@ -4,6 +4,7 @@ pip install wget
 apt-get install aria2
 pip install kaggle
 pip3 install urllib3
+pip install pydot
 
 #To setup Google Drive
 apt-get install -y -qq software-properties-common python-software-properties module-init-tools
