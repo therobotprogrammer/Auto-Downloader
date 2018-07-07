@@ -12,13 +12,14 @@
 import os, sys
 import zipfile
 import wget
-import time
 import shutil
 import requests
 import datetime
 import pandas as pd
 import pytz
 from pytz import timezone
+from time import time
+
 
 self_all_gids = []
 last_download_speed = 0 
@@ -35,12 +36,13 @@ options = {}
 
 class AutoDownloader(object):  
   
-    def __init__(self):
+    def __init__(self, timezone =  'Asia/Kolkata'):
         self.last_message_time = -1
         self.flag_first_hour_message_sent = False
+        self.local_timezone = timezone
 
         
-    def initiate(self, project_dir, data_to_download, common_utils_dir = 'default', recreate_dir = True ):           
+    def initiate(self, project_dir, data_to_download, common_utils_dir = 'default', recreate_dir = True):           
         if not os.path.isdir(project_dir):
             os.mkdir(project_dir)
         elif recreate_dir == True:
@@ -321,7 +323,7 @@ class AutoDownloader(object):
     def send_notification_every_x_minutes(self,msg_string, time_interval_minutes = 60):
         if time_interval_minutes == 0:
            self.send_notification(msg_string)
-           return
+           return True
         
         current_time = datetime.datetime.now() 
         
@@ -335,25 +337,29 @@ class AutoDownloader(object):
 
             if time_different_minutes >= time_interval_minutes:
                self.send_notification(msg_string)
-               self.last_message_time = current_time                         
-           
+               self.last_message_time = current_time   
+               return True
+        return False
         
         
-    def send_notification_clock_multiples(self,msg_string, time_interval = 1, minute_interval = True, local_timezone = 'Asia/Kolkata'): 
+    def send_notification_clock_multiples(self,msg_string, time_interval = 1, minute_interval = True): 
         #US timezone: 'US/Eastern'               
         
         if time_interval == 0:
-            time_interval = 1 # avoids division by 0 
+           time_interval = 1 # avoids division by 0 
         
-        local_timezone = timezone(local_timezone)    
-        system_time = datetime.datetime.now()                           
-        local_time = local_timezone.localize(system_time)  
 
-       
+
+        
+        utc_time = pytz.utc.localize(datetime.datetime.utcnow())
+        local_time = utc_time.astimezone(pytz.timezone(self.local_timezone))
+
+
         
         if self.last_message_time == -1:
             self.send_notification(msg_string)
-            self.last_message_time = local_time            
+            self.last_message_time = local_time
+            return True            
         
         else:
             time_difference = local_time - self.last_message_time 
@@ -366,10 +372,12 @@ class AutoDownloader(object):
                 if time_difference >= time_interval:    
                        if local_time.minute == 0:                   
                            self.send_notification(msg_string)
-                           self.last_message_time = local_time    
+                           self.last_message_time = local_time 
+                           return True
                        elif local_time.minute % time_interval == 0:
                            self.send_notification(msg_string)
                            self.last_message_time = local_time  
+                           return True
                        
             if minute_interval == False:  
                if self.flag_first_hour_message_sent == False:
@@ -377,17 +385,32 @@ class AutoDownloader(object):
                      self.send_notification(msg_string)
                      self.last_message_time = local_time
                      self.flag_first_hour_message_sent = True
+                     return True
 
                elif time_difference >= time_interval:                     
                    if local_time.hour % time_interval == 0:
                        self.send_notification(msg_string)
                        self.last_message_time = local_time 
+                       return True
+        return False
         
         
         
         
+    def get_time_string(self):
         
+        utc_time = pytz.utc.localize(datetime.datetime.utcnow())
+        local_time = utc_time.astimezone(pytz.timezone(self.local_timezone))  
+                
+        year = str(local_time.year)  
+        month = str(local_time.month) 
+        day = str(local_time.day) 
+        hour = str(local_time.hour)
+        minute = str(local_time.minute)
         
+        time_string = year + '-' + month + '-' + day + '-' + hour + '-' + minute
+        return(time_string)
+                
         
         
         
