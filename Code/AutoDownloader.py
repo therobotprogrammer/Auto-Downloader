@@ -35,10 +35,10 @@ options = {}
 
 class AutoDownloader(object):  
   
-    def __init__(self, timezone =  'Asia/Kolkata'):
+    def __init__(self, local_timezone =  'Asia/Kolkata'):
         self.last_message_time = -1
         self.flag_first_hour_message_sent = False
-        self.local_timezone = timezone
+        self.local_timezone = local_timezone
 
         
     def initiate(self, project_dir, data_to_download, common_utils_dir = 'default', recreate_dir = True):           
