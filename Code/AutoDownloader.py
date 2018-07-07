@@ -18,7 +18,7 @@ import datetime
 import pandas as pd
 import pytz
 from pytz import timezone
-from time import time
+import time
 
 
 last_download_speed = 0 
