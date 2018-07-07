@@ -21,7 +21,6 @@ from pytz import timezone
 from time import time
 
 
-self_all_gids = []
 last_download_speed = 0 
 last_download_percentages = ''
 
@@ -69,7 +68,7 @@ class AutoDownloader(object):
         
         self.showDirectory(project_dir)
         
-        self.self_all_gids = []
+        self.all_gids = []
         del downloader
 
 
@@ -103,7 +102,7 @@ class AutoDownloader(object):
         global_download_options['max-connection-per-server'] = '16'
         downloader.changeGlobalOption(global_download_options)
         gid=downloader.addUri([url], {'dir':directory})
-        self_all_gids.append(gid)
+        self.all_gids.append(gid)
 
 
    
@@ -136,13 +135,13 @@ class AutoDownloader(object):
         #Print list of all files to be downloaded
         print('\n\n>>>Downloads Started\n')
         
-        for item in self_all_gids:        
+        for item in self.all_gids:        
             status = downloader.tellStatus(item)
             temp = status['files'][0]
             temp = temp['uris']
             temp = temp[0]
             url = temp['uri']    
-            print('['+ str(self_all_gids.index(item)) + ']' + url)
+            print('['+ str(self.all_gids.index(item)) + ']' + url)
         print('\n')
         while downloader.tellActive(): 
             self.__print_status(downloader)
@@ -159,7 +158,7 @@ class AutoDownloader(object):
     def __print_status(self, downloader, print_speed = True):
         message = ''
         total_speed = 0
-        for item in self_all_gids:        
+        for item in self.all_gids:        
             status = downloader.tellStatus(item)
             
             
@@ -181,7 +180,7 @@ class AutoDownloader(object):
             speed = int(status['downloadSpeed']) /(1024*1024) 
             speed = round(speed, 2)              
             total_speed+= speed
-            message+= '['+ str(self_all_gids.index(item)) + ']'+ str(percentage_completed) + '% '
+            message+= '['+ str(self.all_gids.index(item)) + ']'+ str(percentage_completed) + '% '
         
         if print_speed == True: 
             self.last_download_percentages = message
@@ -196,7 +195,7 @@ class AutoDownloader(object):
         
 
     def __add_files_to_aria(self, downloader, project_dir, data_to_download, common_utils_dir):  
-        self.self_all_gids = []
+        self.all_gids = []
            
         print('>>>Creating Directory Structure: \n')
         for directory, url_links in data_to_download.items():
