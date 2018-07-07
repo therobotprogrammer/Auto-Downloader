@@ -43,7 +43,7 @@ class AutoDownloader(object):
     def initiate(self, project_dir, data_to_download, common_utils_dir = 'default', recreate_dir = True ):           
         if not os.path.isdir(project_dir):
             os.mkdir(project_dir)
-        elif recreate_dir = True:
+        elif recreate_dir == True:
             shutil.rmtree(project_dir)
             os.mkdir(project_dir)
             
