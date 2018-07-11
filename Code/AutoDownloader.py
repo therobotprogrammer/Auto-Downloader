@@ -19,6 +19,7 @@ import pandas as pd
 import pytz
 from pytz import timezone
 import time
+import glob
 
 
 last_download_speed = 0 
@@ -51,7 +52,6 @@ class AutoDownloader(object):
         os.chdir(project_dir)
         print('>>>>>Confirm Project Directory: ' + project_dir)
         sys.path.insert(0, project_dir)           
-
         
         if common_utils_dir == 'default':
             common_utils_dir = project_dir + '/COMMON_UTILS'
@@ -73,7 +73,16 @@ class AutoDownloader(object):
         self.all_gids = []
         del downloader
 
+    def recursively_add_to_path(directory):
+        print('Warning: Only add code that you know is safe. Recusrively adding code is not recommended')
+        sub_dirs = glob(directory + '/*/')      
+        if sub_dirs == []:
+            return None
+        else:
+            for d in sub_dirs:
+                sys.path.insert(0, directory)           
 
+        
     def __download_common_utils(self, common_utils_dir):
         if os.path.isdir(common_utils_dir):
             shutil.rmtree(common_utils_dir)
