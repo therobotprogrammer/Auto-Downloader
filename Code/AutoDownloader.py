@@ -50,6 +50,8 @@ class AutoDownloader(object):
             
         os.chdir(project_dir)
         print('>>>>>Confirm Project Directory: ' + project_dir)
+        sys.path.insert(0, project_dir)           
+
         
         if common_utils_dir == 'default':
             common_utils_dir = project_dir + '/COMMON_UTILS'
