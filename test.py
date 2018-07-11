@@ -48,7 +48,7 @@ auto_dl = AutoDownloader(local_timezone =  'Asia/Kolkata')
 auto_dl.get_time_string()
 #auto_dl.initiate(project_dir, data_to_download)
 
-auto_dl.recursively_add_to_path('~/repository/deep_learning_car')
+auto_dl.recursively_add_to_path('/home/pt/repository/deep_learning_car')
 
 auto_dl.showDirectory(project_dir,True, 2)
 

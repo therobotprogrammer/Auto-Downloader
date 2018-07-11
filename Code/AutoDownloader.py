@@ -73,22 +73,19 @@ class AutoDownloader(object):
         self.all_gids = []
         del downloader
 
-    def recursively_add_to_path(self, main_dir):
+    def recursively_add_to_path(self, currentDir):
         print('Warning: Only add code that you know is safe. Recusrively adding code is not recommended')
+        print('Ignoring files ending with __ or that have a . ')
         
-        print('adding_directory:' + main_dir)
-        sys.path.insert(0, main_dir)
+        index = 0
         
-        sub_dirs = glob(main_dir + '/*/', recursive = True) 
-        
-
-        
-        if sub_dirs == []:
-            return
-        else:
-            for directory in sub_dirs:
-                print('adding_directory:' + directory)
-                sys.path.insert(0, directory)           
+        for root, dirs, files in os.walk(currentDir):
+          for dir in dirs:
+              newDir = os.path.join(root, dir)
+              index += 1
+              if not (newDir.endswith('__') or len(newDir.split('.')) > 1 ):
+                  print('Added ' + newDir + ' to path')
+                  sys.path.insert(0, newDir)           
 
         
     def __download_common_utils(self, common_utils_dir):
@@ -365,13 +362,9 @@ class AutoDownloader(object):
         
         if time_interval == 0:
            time_interval = 1 # avoids division by 0 
-        
 
-
-        
         utc_time = pytz.utc.localize(datetime.datetime.utcnow())
         local_time = utc_time.astimezone(pytz.timezone(self.local_timezone))
-
 
         
         if self.last_message_time == -1:
