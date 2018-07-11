@@ -80,6 +80,7 @@ class AutoDownloader(object):
             return
         else:
             for directory in sub_dirs:
+                print('adding_directory:' + directory)
                 sys.path.insert(0, directory)           
 
         
