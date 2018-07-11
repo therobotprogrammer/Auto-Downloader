@@ -73,13 +73,13 @@ class AutoDownloader(object):
         self.all_gids = []
         del downloader
 
-    def recursively_add_to_path(self, directory):
+    def recursively_add_to_path(self, main_dir):
         print('Warning: Only add code that you know is safe. Recusrively adding code is not recommended')
-        sub_dirs = glob(directory + '/*/', recursive = True)      
+        sub_dirs = glob(main_dir + '/*/', recursive = True)      
         if sub_dirs == []:
             return
         else:
-            for d in sub_dirs:
+            for directory in sub_dirs:
                 sys.path.insert(0, directory)           
 
         
