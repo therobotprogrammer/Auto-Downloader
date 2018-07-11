@@ -19,7 +19,7 @@ import pandas as pd
 import pytz
 from pytz import timezone
 import time
-import glob
+from glob import glob
 
 
 last_download_speed = 0 
