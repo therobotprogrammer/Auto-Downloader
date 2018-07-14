@@ -44,10 +44,10 @@ class AutoDownloader(object):
         
     def initiate(self, project_dir, data_to_download, common_utils_dir = 'default', recreate_dir = True):           
         if not os.path.isdir(project_dir):
-            os.mkdir(project_dir)
+            os.makedirs(project_dir)
         elif recreate_dir == True:
             shutil.rmtree(project_dir)
-            os.mkdir(project_dir)
+            os.makedirs(project_dir)
             
         os.chdir(project_dir)
         print('>>>>>Confirm Project Directory: ' + project_dir)
@@ -74,7 +74,7 @@ class AutoDownloader(object):
         del downloader
 
     def recursively_add_to_path(self, currentDir):
-        print('Warning: Only add code that you know is safe. Recusrively adding code is not recommended')
+        print('Warning: Only add code to path that you know is safe. Recusrively adding code is not recommended')
         print('Ignoring files ending with __ or that have a . ')
         
         index = 0
@@ -84,7 +84,7 @@ class AutoDownloader(object):
               newDir = os.path.join(root, dir)
               index += 1
               if not (newDir.endswith('__') or len(newDir.split('.')) > 1 ):
-                  print('Added ' + newDir + ' to path')
+                  print('Added to path: ' + newDir)
                   sys.path.insert(0, newDir)           
 
         
@@ -92,7 +92,7 @@ class AutoDownloader(object):
         if os.path.isdir(common_utils_dir):
             shutil.rmtree(common_utils_dir)
            
-        os.mkdir(common_utils_dir)
+        os.makedirs(common_utils_dir)
     
         aria_url = 'https://raw.githubusercontent.com/zhenlohuang/pyaria2/master/pyaria2.py'
         wget.download(aria_url , common_utils_dir)
